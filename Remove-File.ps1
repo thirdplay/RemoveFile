@@ -12,6 +12,8 @@
     削除するファイルの拡張子
 .PARAMETER Excludes
     除外するファイルの拡張子
+.PARAMETER Days
+    何日前に作成されたファイルを削除するのか指定します
 #>
 [CmdletBinding()]
 param
@@ -36,11 +38,26 @@ param
         position  = 2,
         ValueFromPipelineByPropertyName = 1)]
     [string[]]
-    $Excludes
+    $Excludes,
+
+    [parameter(
+        mandatory = 0,
+        position  = 3,
+        ValueFromPipelineByPropertyName = 1)]
+    [int]
+    $Days
 )
 
 process
 {
-    # Remove filter file.
-    Get-ChildItem -Path $Path -Include $Targets -Exclude $Excludes -Recurse -File | Remove-Item
+    try
+    {
+        # Remove filter file.
+        $result = Get-ChildItem -Path $Path -Include $Targets -Exclude $Excludes -Recurse -File | Where-Object{((Get-Date).Subtract($_.LastWriteTime)).Days -ge $Days} | Remove-Item
+    }
+    catch
+    {
+        throw $_
+    }
 }
+
