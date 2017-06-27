@@ -1,19 +1,19 @@
 <#
 .SYNOPSIS 
-    Žw’èƒtƒ@ƒCƒ‹ƒtƒBƒ‹ƒ^‚Åƒtƒ@ƒCƒ‹‚ðíœ‚µ‚Ü‚·B
+    æŒ‡å®šãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚£ãƒ«ã‚¿ã§ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ã—ã¾ã™ã€‚
 .DESCRIPTION 
-    Žw’è‚³‚ê‚½ƒtƒ@ƒCƒ‹ƒtƒBƒ‹ƒ^‚Éˆê’v‚·‚éƒtƒ@ƒCƒ‹‚ðíœ‚µ‚Ü‚·B
-    ‚Ü‚½AœŠOƒtƒBƒ‹ƒ^‚Éˆê’v‚·‚éƒtƒ@ƒCƒ‹‚Ííœ‘ÎÛŠO‚Æ‚µ‚Ü‚·B
+    æŒ‡å®šã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚£ãƒ«ã‚¿ã«ä¸€è‡´ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ã—ã¾ã™ã€‚
+    ã¾ãŸã€é™¤å¤–ãƒ•ã‚£ãƒ«ã‚¿ã«ä¸€è‡´ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã¯å‰Šé™¤å¯¾è±¡å¤–ã¨ã—ã¾ã™ã€‚
 .EXAMPLE
     Remove-File C:\test *.xlsx
 .PARAMETER Path
-    íœ‚·‚éƒfƒBƒŒƒNƒgƒŠ‚ÌƒpƒX
+    å‰Šé™¤ã™ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ãƒ‘ã‚¹
 .PARAMETER Targets
-    íœ‚·‚éƒtƒ@ƒCƒ‹‚ÌŠg’£Žq
+    å‰Šé™¤ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®æ‹¡å¼µå­
 .PARAMETER Excludes
-    œŠO‚·‚éƒtƒ@ƒCƒ‹‚ÌŠg’£Žq
+    é™¤å¤–ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®æ‹¡å¼µå­
 .PARAMETER Days
-    ‰½“ú‘O‚Éì¬‚³‚ê‚½ƒtƒ@ƒCƒ‹‚ðíœ‚·‚é‚Ì‚©Žw’è‚µ‚Ü‚·
+    ä½•æ—¥å‰ã«ä½œæˆã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ã™ã‚‹ã®ã‹æŒ‡å®šã—ã¾ã™
 #>
 [CmdletBinding()]
 param
@@ -48,16 +48,25 @@ param
     $Days
 )
 
+begin
+{
+    $ErrorActionPreference = 'stop'
+}
+
 process
 {
     try
     {
         # Remove filter file.
-        $result = Get-ChildItem -Path $Path -Include $Targets -Exclude $Excludes -Recurse -File | Where-Object{((Get-Date).Subtract($_.LastWriteTime)).Days -ge $Days} | Remove-Item
+        $result = Get-ChildItem -Path $Path -Include $Targets -Exclude $Excludes -Recurse -File
+        if($Days -ne 0)
+        {
+            $result = $result | Where-Object{((Get-Date).Subtract($_.LastWriteTime)).Days -ge $Days}
+        }       
+        $result | Remove-Item
     }
     catch
     {
         throw $_
     }
 }
-
