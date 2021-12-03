@@ -4,5 +4,5 @@
 
 ### ライセンス
 
-* [The MIT License (MIT)](LICENSE.txt)
+* [The MIT License (MIT)](LICENSE)
 
